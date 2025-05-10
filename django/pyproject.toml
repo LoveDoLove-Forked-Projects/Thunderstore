@@ -9,10 +9,10 @@ python = "^3.8"
 Django = "^3.1"
 django-environ = "^0.4"
 arrow = "^0.17"
-Pillow = "^8.3"
+Pillow = "^10.3"
 psycopg2-binary = "^2.8"
 easy-thumbnails = "^2.7"  # This has a monkeypatch and might be a difficult upgrade
-gunicorn = { version = "^20.0", extras = ["gevent"] }
+gunicorn = { version = "^23.0", extras = ["gevent"] }
 social-auth-app-django = "^5.0"
 social-auth-core = "^4.1"
 whitenoise = "^5.0"
@@ -20,18 +20,18 @@ django-storages = { version = "^1.11", extras = ["boto3"] }
 djangorestframework = "^3.11"
 drf-yasg = "^1.17"
 django-ipware = "^3.0"
-sentry_sdk = {extras = ["celery"], version = "^1.31.0"}
+sentry_sdk = {extras = ["celery"], version = "^2.8.0"}
 django-redis = "^4.11"
-pyjwt = { version = "^2.0", extras = ["crypto"] }
-celery = "^5.0.5"
-django-celery-results = "^2.0.0"
+pyjwt = { version = "^2.9", extras = ["crypto"] }
+celery = "^5.5.1"
+django-celery-results = "^2.4.0"
 django-celery-beat = "^2.1.0"
 ulid2 = "^0.2.0"
 django-cachalot = "^2.3.3"
 django-cors-headers = "^3.7.0"
 boto3 = "^1.17.47"
 bleach = "^3.3.0"
-markdown-it-py = {version = "2.1.0", extras = ["linkify"]}
+markdown-it-py = {version = "2.2.0", extras = ["linkify"]}
 abyss = {git = "https://github.com/akx/abyss.git", rev = "4352e557f25a303f718ec1bf82ea0ca545ebc077"}
 lxml = "^4.9.1"
 pygments = "^2.16.1"
@@ -75,7 +75,7 @@ pep8-naming = "^0.11.1"
 watchdog = {extras = ["watchmedo"], version = "^1.0.2"}
 mypy-boto3-s3 = "^1.17.47"
 pytest-freezegun = "^0.4.2"
-pydantic = "^1.9.0"
+pydantic = "^1.10.13"
 pytest-xdist = "^2.5.0"
 pytest-split = "^0.8.0"
 
