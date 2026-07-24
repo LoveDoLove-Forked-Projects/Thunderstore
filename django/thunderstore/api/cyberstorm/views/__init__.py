@@ -1,4 +1,5 @@
 from .community import CommunityAPIView
+from .community_alert import CommunityAlertListAPIView
 from .community_filters import CommunityFiltersAPIView
 from .community_list import CommunityListAPIView
 from .markdown import PackageVersionChangelogAPIView, PackageVersionReadmeAPIView
@@ -41,6 +42,7 @@ from .user import DeleteUserAPIView, DisconnectUserLinkedAccountAPIView
 
 __all__ = [
     "CommunityAPIView",
+    "CommunityAlertListAPIView",
     "CommunityFiltersAPIView",
     "CommunityListAPIView",
     "CreateServiceAccountAPIView",

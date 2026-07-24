@@ -3,6 +3,7 @@ ENDPOINTS = {
         "/api/cyberstorm/community/",
         "/api/cyberstorm/community/{community_id}/",
         "/api/cyberstorm/community/{community_id}/filters/",
+        "/api/cyberstorm/community/{community_id}/alerts/",
         "/api/cyberstorm/listing/{community_id}/",
         "/api/cyberstorm/listing/{community_id}/{namespace_id}/",
         "/api/cyberstorm/listing/{community_id}/{namespace_id}/{package_name}/",
