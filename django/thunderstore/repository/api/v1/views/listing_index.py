@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.cache import get_conditional_response
 from django.utils.http import http_date
+from drf_yasg import openapi  # type: ignore
 from drf_yasg.utils import swagger_auto_schema  # type: ignore
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -9,6 +10,22 @@ from rest_framework.views import APIView
 from thunderstore.community.models import Community
 from thunderstore.core.utils import replace_cdn
 from thunderstore.repository.models import APIV1ChunkedPackageCache
+
+DESCRIPTION = (
+    "Redirects to a gzip compressed blob file containing an array of URLs. "
+    "Each URL points to a gzip compressed chunk of the community's package "
+    "listing, in the same format as the `/api/v1/package/` endpoint.\n\n"
+    "The response supports conditional requests via the `If-Modified-Since` "
+    "header, in which case a 304 is returned instead of a redirect."
+)
+
+CDN_PARAMETER = openapi.Parameter(
+    "cdn",
+    openapi.IN_QUERY,
+    description=("Hostname of a mirror CDN to serve the index blob from."),
+    type=openapi.TYPE_STRING,
+    required=False,
+)
 
 
 class PackageListingIndex(APIView):
@@ -20,8 +37,25 @@ class PackageListingIndex(APIView):
     """
 
     @swagger_auto_schema(
-        tags=["api"],
-        auto_schema=None,  # Hide from API docs for now.
+        tags=["v1"],
+        operation_description=DESCRIPTION,
+        manual_parameters=[CDN_PARAMETER],
+        responses={
+            200: None,
+            302: openapi.Response(
+                description="Redirect to the index blob containing chunk URLs.",
+            ),
+            304: openapi.Response(
+                description="The index has not changed since If-Modified-Since.",
+            ),
+            503: openapi.Response(
+                description="No cache has been built for the community yet.",
+                schema=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={"error": openapi.Schema(type=openapi.TYPE_STRING)},
+                ),
+            ),
+        },
     )
     def get(self, request: Request, community_identifier: str):
         community = get_object_or_404(
