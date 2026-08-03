@@ -48,6 +48,9 @@ class PackageListingIndex(APIView):
             304: openapi.Response(
                 description="The index has not changed since If-Modified-Since.",
             ),
+            404: openapi.Response(
+                description="Community not found.",
+            ),
             503: openapi.Response(
                 description="No cache has been built for the community yet.",
                 schema=openapi.Schema(
