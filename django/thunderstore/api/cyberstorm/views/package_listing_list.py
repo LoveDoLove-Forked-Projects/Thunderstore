@@ -37,11 +37,11 @@ class PackageListRequestSerializer(serializers.Serializer):
 
     deprecated = serializers.BooleanField(default=False)
     excluded_categories = serializers.ListField(
-        child=serializers.CharField(),
+        child=serializers.IntegerField(),
         default=[],
     )
     included_categories = serializers.ListField(
-        child=serializers.CharField(),
+        child=serializers.IntegerField(),
         default=[],
     )
     nsfw = serializers.BooleanField(default=False)
@@ -390,7 +390,7 @@ def filter_nsfw(
 
 
 def filter_in_categories(
-    category_ids: List[str],
+    category_ids: List[int],
     queryset: QuerySet[PackageListing],
 ) -> QuerySet[PackageListing]:
     """
@@ -406,7 +406,7 @@ def filter_in_categories(
 
 
 def filter_not_in_categories(
-    category_ids: List[str],
+    category_ids: List[int],
     queryset: QuerySet[PackageListing],
 ) -> QuerySet[PackageListing]:
     """

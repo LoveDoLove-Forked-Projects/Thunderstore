@@ -194,6 +194,27 @@ def test_base_view__when_excluding_category__filters_out_matched(
 
 @mock_base_package_list_api_view
 @pytest.mark.django_db
+@pytest.mark.parametrize("param", ["included_categories", "excluded_categories"])
+@pytest.mark.parametrize("value", ["asd", "1.5", "1,2"])
+def test_base_view__when_category_filter_is_not_an_integer__returns_400(
+    community: Community,
+    param: str,
+    value: str,
+) -> None:
+    # Non-integer category ids used to reach the DB layer and cause a 500;
+    # they should now be rejected during query param validation instead.
+    request = APIRequestFactory().get("/", {param: value})
+    response = BasePackageListAPIView().dispatch(
+        request,
+        community_id=community.identifier,
+    )
+
+    assert response.status_code == 400
+    assert param in response.data
+
+
+@mock_base_package_list_api_view
+@pytest.mark.django_db
 def test_base_view__when_requesting_section__filters_based_on_categories(
     community: Community,
 ) -> None:
@@ -854,6 +875,39 @@ def test_listing_by_dependency_view__returns_only_packages_listed_in_community(
     assert result["count"] == 1
     assert result["results"][0]["namespace"] == expected.package.namespace.name
     assert result["results"][0]["name"] == expected.package.name
+
+
+###############################
+# All concrete listing endpoints
+###############################
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("param", ["included_categories", "excluded_categories"])
+@pytest.mark.parametrize("value", ["asd", "1.5", "1,2"])
+def test_all_listing_endpoints__when_category_filter_is_not_an_integer__return_400(
+    api_client: APIClient,
+    community: Community,
+    param: str,
+    value: str,
+) -> None:
+    # All three concrete endpoints share PackageListRequestSerializer, so a
+    # non-integer category id must be rejected with a 400 (not crash with a
+    # 500) on each of them, exercised here through their real URLs.
+    listing = PackageListingFactory(community_=community)
+    namespace = listing.package.namespace.name
+    package = listing.package.name
+
+    urls = [
+        f"/api/cyberstorm/listing/{community.identifier}/",
+        f"/api/cyberstorm/listing/{community.identifier}/{namespace}/",
+        f"/api/cyberstorm/listing/{community.identifier}/{namespace}/{package}/dependants/",
+    ]
+
+    for url in urls:
+        response = api_client.get(url, {param: value})
+        assert response.status_code == 400, url
+        assert param in response.json()
 
 
 @mock_base_package_list_api_view
