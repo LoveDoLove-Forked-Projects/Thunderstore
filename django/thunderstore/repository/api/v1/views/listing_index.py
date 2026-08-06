@@ -81,3 +81,8 @@ class PackageListingIndex(APIView):
         response["Last-Modified"] = http_date(last_modified)
         response["Cache-Control"] = "public, max-age=0, s-maxage=300"
         return response
+
+
+class PackageListingIndexHidden(PackageListingIndex):
+    # TODO hide the legacy /api/v1/package-listing-index/ for now from swagger
+    swagger_schema = None
