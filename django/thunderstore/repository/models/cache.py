@@ -270,10 +270,11 @@ def get_package_listing_chunk(
         .values("count")
     )
 
-    dependencies_prefetch = Prefetch(
-        "dependencies",
-        queryset=PackageVersion.objects.annotate(
-            _full_version_name=Concat(
+    # collect dependency names via a subquery, instead of aggregating them in Python
+    dependency_names = (
+        PackageVersion.objects.filter(dependants=OuterRef("pk"))
+        .annotate(
+            _full_name=Concat(
                 "package__owner__name",
                 Value("-"),
                 "package__name",
@@ -281,15 +282,18 @@ def get_package_listing_chunk(
                 "version_number",
             ),
         )
-        .only("id")
-        .order_by(Lower("package__namespace__name"), Lower("package__name")),
+        .order_by(Lower("package__namespace__name"), Lower("package__name"))
+        # without having a limit, Django will not include the order_by in the subquery. Uses a max of 1000 like ManifestV1Serializer
+        .values("_full_name")[:1000]
     )
 
     versions_prefetch = Prefetch(
         "package__versions",
         queryset=PackageVersion.objects.filter(is_active=True)
         .select_related("package", "package__owner")
-        .prefetch_related(dependencies_prefetch),
+        .annotate(
+            _dependency_names=Subquery(dependency_names, template="ARRAY(%(subquery)s)")
+        ),
     )
 
     listings = (
@@ -342,9 +346,7 @@ def listing_to_json(listing: PackageListing) -> bytes:
                     "description": version.description,
                     "icon": version.icon.url,
                     "version_number": version.version_number,
-                    "dependencies": [
-                        d._full_version_name for d in version.dependencies.all()
-                    ],
+                    "dependencies": version._dependency_names,
                     "download_url": version.full_download_url,
                     "downloads": version.downloads,
                     "date_created": version.date_created.isoformat(),
