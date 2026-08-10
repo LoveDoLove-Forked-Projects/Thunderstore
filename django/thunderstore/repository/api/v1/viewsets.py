@@ -116,7 +116,7 @@ class PackageViewSet(
             community_identifier=self.community_identifier
         )
 
-    @swagger_auto_schema(tags=["v1"])
+    @swagger_auto_schema(deprecated=True, tags=["v1"])
     def list(self, request: HttpRequestType, *args: Any, **kwargs: Any) -> HttpResponse:
         cache = APIV1PackageCache.get_latest_for_community(
             community_identifier=self.community_identifier
