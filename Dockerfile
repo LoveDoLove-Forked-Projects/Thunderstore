@@ -1,4 +1,6 @@
-FROM node:12-alpine as builder
+# Digest-pinned: node 12 is EOL and deliberately frozen (it builds the legacy
+# site's assets only). The pin stops the tag drifting or vanishing mid-migration.
+FROM node:12-alpine@sha256:d4b15b3d48f42059a15bd659be60afe21762aae9d6cbea6f124440895c27db68 as builder
 
 WORKDIR /app
 COPY ./builder/package.json ./builder/yarn.lock /app/

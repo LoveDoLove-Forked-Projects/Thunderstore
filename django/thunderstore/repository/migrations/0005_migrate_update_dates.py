@@ -1,12 +1,14 @@
-from distutils.version import StrictVersion
-
 from django.db import migrations
 from django.db.models import Case, When
+
+# Historical migration: keep this import stable. It replaced
+# distutils.version.StrictVersion, which was removed in Python 3.12.
+from thunderstore.repository.version import Version
 
 
 def get_latest_version(package):
     versions = package.versions.values_list("pk", "version_number")
-    ordered = sorted(versions, key=lambda version: StrictVersion(version[1]))
+    ordered = sorted(versions, key=lambda version: Version(version[1]))
     pk_list = [version[0] for version in reversed(ordered)]
     preserved = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(pk_list)])
     return package.versions.filter(pk__in=pk_list).order_by(preserved).first()

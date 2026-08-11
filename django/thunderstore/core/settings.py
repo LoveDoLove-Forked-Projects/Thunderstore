@@ -295,6 +295,12 @@ INSTALLED_APPS = plugin_registry.get_installed_apps(
     ]
 )
 
+# Pinned explicitly to preserve the pre-Django-3.2 default. Django 3.2 changed
+# the implicit default to BigAutoField, which would generate an AlterField for
+# every model's primary key and rewrite every table. Changing this is a
+# deliberate, separately planned migration — not a side effect of upgrading.
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
+
 MIDDLEWARE = [
     "thunderstore.core.middleware.QueryCountHeaderMiddleware",
     "django.middleware.security.SecurityMiddleware",
