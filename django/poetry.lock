@@ -72,18 +72,21 @@ python-dateutil = ">=2.7.0"
 
 [[package]]
 name = "asgiref"
-version = "3.3.1"
+version = "3.8.1"
 description = "ASGI specs, helper code, and adapters"
 category = "main"
 optional = false
-python-versions = ">=3.5"
+python-versions = ">=3.8"
 files = [
-    {file = "asgiref-3.3.1-py3-none-any.whl", hash = "sha256:5ee950735509d04eb673bd7f7120f8fa1c9e2df495394992c73234d526907e17"},
-    {file = "asgiref-3.3.1.tar.gz", hash = "sha256:7162a3cb30ab0609f1a4c95938fd73e8604f63bdba516a7f7d64b83ff09478f0"},
+    {file = "asgiref-3.8.1-py3-none-any.whl", hash = "sha256:3e1e3ecc849832fe52ccf2cb6686b7a55f82bb1d6aee72a58826471390335e47"},
+    {file = "asgiref-3.8.1.tar.gz", hash = "sha256:c343bd80a0bec947a9860adb4c432ffa7db769836c64238fc34bdc3fec84d590"},
 ]
 
+[package.dependencies]
+typing-extensions = {version = ">=4", markers = "python_version < \"3.11\""}
+
 [package.extras]
-tests = ["pytest", "pytest-asyncio"]
+tests = ["mypy (>=0.800)", "pytest", "pytest-asyncio"]
 
 [[package]]
 name = "atomicwrites"
@@ -722,39 +725,39 @@ files = [
 
 [[package]]
 name = "django"
-version = "3.1.7"
+version = "3.2.25"
 description = "A high-level Python Web framework that encourages rapid development and clean, pragmatic design."
 category = "main"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "Django-3.1.7-py3-none-any.whl", hash = "sha256:baf099db36ad31f970775d0be5587cc58a6256a6771a44eb795b554d45f211b8"},
-    {file = "Django-3.1.7.tar.gz", hash = "sha256:32ce792ee9b6a0cbbec340123e229ac9f765dff8c2a4ae9247a14b2ba3a365a7"},
+    {file = "Django-3.2.25-py3-none-any.whl", hash = "sha256:a52ea7fcf280b16f7b739cec38fa6d3f8953a5456986944c3ca97e79882b4e38"},
+    {file = "Django-3.2.25.tar.gz", hash = "sha256:7ca38a78654aee72378594d63e51636c04b8e28574f5505dff630895b5472777"},
 ]
 
 [package.dependencies]
-asgiref = ">=3.2.10,<4"
+asgiref = ">=3.3.2,<4"
 pytz = "*"
 sqlparse = ">=0.2.2"
 
 [package.extras]
-argon2 = ["argon2-cffi (>=16.1.0)"]
+argon2 = ["argon2-cffi (>=19.1.0)"]
 bcrypt = ["bcrypt"]
 
 [[package]]
 name = "django-cachalot"
-version = "2.3.3"
+version = "2.4.5"
 description = "Caches your Django ORM queries and automatically invalidates them."
 category = "main"
 optional = false
 python-versions = "*"
 files = [
-    {file = "django-cachalot-2.3.3.tar.gz", hash = "sha256:ba3a6cabf834139196179c4f6d77409ae9170267ee8ce40e27bbf6c3f6733b2b"},
-    {file = "django_cachalot-2.3.3-py3-none-any.whl", hash = "sha256:55f94e94f7000f5f6bd92188d3d7535cfdef79f2e697e36daf69cba8f435e156"},
+    {file = "django-cachalot-2.4.5.tar.gz", hash = "sha256:2423017353f64263d939ac972ec397c65267b2c2ae923da7c78a6fe9ea4f81e6"},
+    {file = "django_cachalot-2.4.5-py3-none-any.whl", hash = "sha256:4a1ef18d9e3db09871da9933a84d60b129f5806e84186a871145568e68c8a0c7"},
 ]
 
 [package.dependencies]
-Django = ">=2"
+Django = ">=2.2,<4.1"
 
 [[package]]
 name = "django-celery-beat"
@@ -2174,22 +2177,6 @@ py = "*"
 pytest = ">=3.10"
 
 [[package]]
-name = "pytest-freezegun"
-version = "0.4.2"
-description = "Wrap tests with fixtures in freeze_time"
-category = "dev"
-optional = false
-python-versions = "*"
-files = [
-    {file = "pytest-freezegun-0.4.2.zip", hash = "sha256:19c82d5633751bf3ec92caa481fb5cffaac1787bd485f0df6436fd6242176949"},
-    {file = "pytest_freezegun-0.4.2-py2.py3-none-any.whl", hash = "sha256:5318a6bfb8ba4b709c8471c94d0033113877b3ee02da5bfcd917c1889cde99a7"},
-]
-
-[package.dependencies]
-freezegun = ">0.3"
-pytest = ">=3.0.0"
-
-[[package]]
 name = "pytest-mock"
 version = "3.5.1"
 description = "Thin-wrapper around the mock package for easier use with pytest"
@@ -2779,7 +2766,7 @@ files = [
 name = "typing-extensions"
 version = "4.5.0"
 description = "Backported and Experimental Type Hints for Python 3.7+"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -3053,4 +3040,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "d602485c8dfff798cae7fdc97378938457b067894a77b235e199e3b206a306a3"
+content-hash = "37d452df10c15262642bb545ca394369ef22e764c63127aa9723219a02fd33d7"

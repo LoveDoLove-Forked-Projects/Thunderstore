@@ -4,7 +4,7 @@ import threading
 from copy import copy, deepcopy
 from http.server import BaseHTTPRequestHandler
 from http.server import HTTPServer as SuperHTTPServer
-from typing import Any
+from typing import Any, Iterator
 from zipfile import ZIP_DEFLATED, ZipFile
 
 import pytest
@@ -12,6 +12,8 @@ from django.contrib.auth.models import AnonymousUser, Permission
 from django.contrib.sites.models import Site
 from django.core.cache import cache
 from django.core.files.base import File
+from freezegun import freeze_time
+from freezegun.api import FrozenDateTimeFactory
 from PIL import Image
 from rest_framework.test import APIClient
 from social_django.models import UserSocialAuth
@@ -83,6 +85,17 @@ class PostHTTPRequestHandler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.end_headers()
         return
+
+
+@pytest.fixture()
+def freezer() -> Iterator[FrozenDateTimeFactory]:
+    """
+    Freeze time for the duration of the test and yield the factory used to
+    move it. Replaces the fixture previously provided by the pytest-freezegun
+    plugin, which is unmaintained and incompatible with Python 3.12.
+    """
+    with freeze_time() as frozen:
+        yield frozen
 
 
 @pytest.fixture()
@@ -323,7 +336,7 @@ def setup_cache(request):
     14, as 15 is the default amount of redis databases.
     """
     from django.conf import settings
-    from django.core.cache import DEFAULT_CACHE_ALIAS, _create_cache, caches
+    from django.core.cache import DEFAULT_CACHE_ALIAS, caches
 
     xdist_suffix = getattr(request.config, "workerinput", {}).get("workerid")
     if xdist_suffix:
@@ -340,7 +353,20 @@ def setup_cache(request):
     parts[-1] = str(db_id)
     new_caches[DEFAULT_CACHE_ALIAS]["LOCATION"] = "/".join(parts)
     settings.CACHES = new_caches
-    caches._caches.caches[DEFAULT_CACHE_ALIAS] = _create_cache(DEFAULT_CACHE_ALIAS)
+    # Django 3.2's CacheHandler caches its settings snapshot twice over: the
+    # `settings` cached_property overwrites `_settings` with the resolved dict
+    # on first access, so both must be reset or a cache access made anywhere
+    # before this fixture (import-order dependent!) would pin the old LOCATION.
+    caches._settings = None
+    try:
+        del caches.settings
+    except AttributeError:
+        pass
+    setattr(
+        caches._connections,
+        DEFAULT_CACHE_ALIAS,
+        caches.create_connection(DEFAULT_CACHE_ALIAS),
+    )
 
 
 @pytest.fixture(scope="session")
