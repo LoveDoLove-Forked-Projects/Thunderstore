@@ -6,33 +6,32 @@ authors = ["Mythic <mythicmaniac@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-Django = "^3.2"
+Django = "^4.2"
 django-environ = "^0.4"
 arrow = "^0.17"
 Pillow = "^8.3"
 psycopg2-binary = "^2.8"
-easy-thumbnails = "^2.7"  # This has a monkeypatch and might be a difficult upgrade
+easy-thumbnails = "^2.8.5"  # This has a monkeypatch and might be a difficult upgrade
 gunicorn = { version = "^20.0", extras = ["gevent"] }
 uwsgi = "2.0.30"
-social-auth-app-django = "^5.0"
-social-auth-core = "^4.1"
-whitenoise = "^5.0"
-django-storages = { version = "^1.11", extras = ["boto3"] }
-djangorestframework = "^3.11"
-drf-yasg = "^1.17"
+social-auth-app-django = "^5.2"
+social-auth-core = "^4.4"
+whitenoise = "^6.2"
+django-storages = { version = "^1.13", extras = ["boto3"] }
+# Held at 3.14: DRF 3.15 changes client-visible behavior (404 detail
+# messages, schema generation) and deserves its own upgrade commit.
+djangorestframework = "~3.14"
+drf-yasg = "^1.21"
 django-ipware = "^3.0"
 sentry_sdk = {extras = ["celery"], version = "^1.31.0"}
-django-redis = "^4.11"
+django-redis = "^5.2"
 pyjwt = { version = "^2.0", extras = ["crypto"] }
-celery = "^5.0.5"
-django-celery-results = "^2.0.0"
-django-celery-beat = "^2.1.0"
+celery = "^5.3"
+django-celery-results = "^2.5"
+django-celery-beat = "^2.5"
 ulid2 = "^0.2.0"
-# 2.4.x is the last line matching production's cache invalidation behavior;
-# 2.5+ changed raw-SQL invalidation and breaks the parallel test setup.
-# Django 4.2 (roadmap step 3) will force a jump to >=2.6 — revisit then.
-django-cachalot = "~2.4.5"
-django-cors-headers = "^3.7.0"
+django-cachalot = "^2.6"
+django-cors-headers = "^3.14"
 boto3 = "^1.17.47"
 bleach = "^3.3.0"
 markdown-it-py = {version = "2.1.0", extras = ["linkify"]}
@@ -40,6 +39,8 @@ abyss = {git = "https://github.com/akx/abyss.git", rev = "4352e557f25a303f718ec1
 lxml = "^4.9.1"
 pygments = "^2.16.1"
 confluent-kafka = "2.11.1"
+# Only used by historical migrations; Django itself no longer needs pytz.
+pytz = "*"
 
 [tool.poetry.group.plugins]
 optional = true
@@ -58,7 +59,7 @@ pytest-django = "^4.1"
 factory_boy = "^3.2"
 Faker = "^6.0"
 pytest-mock = "^3.5"
-django-debug-toolbar = "^3.2"
+django-debug-toolbar = "^4.0"
 pytest-env = "^0.6.2"
 black = ">=20.8b1"
 isort = "^5.7.0"

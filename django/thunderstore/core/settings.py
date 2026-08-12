@@ -387,7 +387,6 @@ TIME_ZONE = "UTC"
 
 USE_I18N = True
 
-USE_L10N = True
 
 USE_TZ = True
 
@@ -687,7 +686,9 @@ AWS_QUERYSTRING_AUTH = env.bool("AWS_QUERYSTRING_AUTH")
 AWS_S3_OBJECT_PARAMETERS = {
     "CacheControl": "max-age=2592000",  # 30 days
 }
-AWS_S3_SECURE_URLS = env.bool("AWS_S3_SECURE_URLS")
+# django-storages >=1.13 replaced the AWS_S3_SECURE_URLS boolean with
+# AWS_S3_URL_PROTOCOL. The env var is kept for deployment compatibility.
+AWS_S3_URL_PROTOCOL = "https:" if env.bool("AWS_S3_SECURE_URLS") else "http:"
 
 # Usermedia S3 settings
 
@@ -758,7 +759,7 @@ S3_MIRRORS: Tuple[S3MirrorConfig, ...] = (
     #     "location": env.str("..."),
     #     "custom_domain": env.str("..."),
     #     "endpoint_url": env.str("..."),
-    #     "secure_urls": env.bool("..."),
+    #     "url_protocol": "https:" if env.bool("...") else "http:",
     #     "file_overwrite": env.bool("..."),
     #     "default_acl": env.str("..."),
     #     "object_parameters": AWS_S3_OBJECT_PARAMETERS,
@@ -782,7 +783,9 @@ if all(
             "location": validate_filepath_prefix(env.str("MIRROR_S3_LOCATION")),
             "custom_domain": env.str("MIRROR_S3_CUSTOM_DOMAIN"),
             "endpoint_url": env.str("MIRROR_S3_ENDPOINT_URL"),
-            "secure_urls": env.bool("MIRROR_S3_SECURE_URLS"),
+            "url_protocol": (
+                "https:" if env.bool("MIRROR_S3_SECURE_URLS") else "http:"
+            ),
             "file_overwrite": env.bool("MIRROR_S3_FILE_OVERWRITE"),
             "default_acl": env.str("MIRROR_S3_DEFAULT_ACL"),
             "object_parameters": AWS_S3_OBJECT_PARAMETERS,

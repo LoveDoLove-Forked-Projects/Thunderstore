@@ -80,6 +80,14 @@ class PackageListPaginator(PageNumberPagination):
         """
         return []
 
+    def get_schema_operation_parameters(self, view):
+        """
+        drf_yasg >=1.21 probes this coreapi-free method before falling
+        back to get_schema_fields, so it must be silenced for the same
+        reason as above.
+        """
+        return []
+
 
 class BasePackageListAPIView(PublicCacheMixin, ListAPIView):
     """

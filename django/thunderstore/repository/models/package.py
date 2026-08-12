@@ -151,9 +151,15 @@ class Package(VisibilityMixin, AdminLinkMixin):
     @cached_property
     def has_wiki(self) -> bool:
         try:
-            return self.wiki.wiki.pages.exists()
+            wiki = self.wiki.wiki
         except ObjectDoesNotExist:
             return False
+        # An unsaved dummy wiki (PackageWiki.get_for_package with dummy=True)
+        # has no pages. Django 4.x raises ValueError for related-manager
+        # queries on unsaved instances where 3.2 returned an empty queryset.
+        if wiki.pk is None:
+            return False
+        return wiki.pages.exists()
 
     @cached_property
     def full_package_name(self):
