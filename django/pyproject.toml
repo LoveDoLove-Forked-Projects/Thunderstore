@@ -11,14 +11,14 @@ django-environ = "^0.4"
 arrow = "^0.17"
 Pillow = "^10.3"
 psycopg2-binary = "^2.9.9"
-easy-thumbnails = "^2.8.5"  # This has a monkeypatch and might be a difficult upgrade
+easy-thumbnails = "^2.9"  # This has a monkeypatch and might be a difficult upgrade
 gunicorn = { version = "^20.0", extras = ["gevent"] }
 gevent = "^24.2"
 uwsgi = "2.0.30"
-social-auth-app-django = "^5.2"
+social-auth-app-django = "^5.4"
 social-auth-core = "^4.4"
 whitenoise = "^6.2"
-django-storages = { version = "^1.13", extras = ["boto3"] }
+django-storages = { version = "^1.14", extras = ["boto3"] }
 # Held at 3.14: DRF 3.15 changes client-visible behavior (404 detail
 # messages, schema generation) and deserves its own upgrade commit.
 djangorestframework = "~3.14"
@@ -30,11 +30,11 @@ django-redis = "^5.2"
 # the widely-deployed 5.x line rather than whatever resolves newest.
 redis = "^5.2"
 pyjwt = { version = "^2.0", extras = ["crypto"] }
-celery = "^5.3"
+celery = "^5.5"
 django-celery-results = "^2.5"
 django-celery-beat = "^2.5"
 ulid2 = "^0.2.0"
-django-cachalot = "^2.6"
+django-cachalot = "^2.9"
 django-cors-headers = "^3.14"
 boto3 = "^1.17.47"
 bleach = "^3.3.0"
