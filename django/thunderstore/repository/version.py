@@ -1,45 +1,29 @@
 """
-A faithful in-repo replacement for ``distutils.version.StrictVersion``.
+A faithful in-repo replacement for ``distutils.version.StrictVersion``, which
+was removed from the standard library in Python 3.12 (PEP 632). Version parsing
+is user-facing at package submission and determines "latest version"
+resolution, so grammar, ordering and error messages are reproduced exactly;
+tests/test_version.py holds the characterization suite.
 
-``distutils`` was removed from the standard library in Python 3.12 (PEP 632).
-Package version strings are user-facing at submission time and determine
-"latest version" resolution, so this module reproduces ``StrictVersion``'s
-parsing grammar, ordering semantics and error message text exactly rather than
-approximating them.
+``packaging.version.Version`` is deliberately not used: it accepts a far wider
+grammar (PEP 440) and orders suffixed versions differently.
 
-``packaging.version.Version`` is deliberately NOT used as the replacement. It
-accepts a far wider grammar (``1.0``, ``1.0.0.post1``, ``1.0.0.dev0``, epochs,
-local versions), which would silently widen what can be submitted to the
-package index, and it orders suffixed versions differently.
-
-Two intentional deviations from ``StrictVersion``, both strictly safer:
-
-1. An empty or ``None`` version string raises ``ValueError``. ``StrictVersion``
-   skipped parsing entirely for falsy input, leaving the instance without a
-   ``version`` attribute so the failure surfaced later as an ``AttributeError``
-   from unrelated code. Both reject the input; this one rejects it at
-   construction using the same exception type as every other invalid version.
-2. Instances are hashable. ``StrictVersion`` defined ``__eq__`` without
-   ``__hash__`` and was therefore unhashable.
+One deviation: empty or ``None`` input raises ``ValueError`` at construction
+instead of surfacing later as an ``AttributeError``. Instances are unhashable
+like ``StrictVersion`` and must stay that way, as they compare equal to their
+string form.
 """
 
 import re
 from typing import Any, Optional, Tuple, Union
 
-# Mirrors distutils.version.StrictVersion.version_re exactly.
-VERSION_RE = re.compile(
-    r"^(\d+) \. (\d+) (\. (\d+))? ([ab](\d+))?$", re.VERBOSE | re.ASCII
-)
+VERSION_RE = re.compile(r"^(\d+) \. (\d+) (\. (\d+))? ([ab](\d+))?$", re.VERBOSE)
 
 
 class Version:
     """
-    A strict ``major.minor.patch`` version, optionally carrying an ``aN``/``bN``
+    A strict ``major.minor.patch`` version with an optional ``aN``/``bN``
     prerelease suffix.
-
-    Note that the patch component is optional when parsing (``1.0`` parses to
-    ``(1, 0, 0)``); callers that require the canonical three-component form must
-    check the round-trip themselves, as ``VersionNumberValidator`` does.
     """
 
     version: Tuple[int, int, int]
@@ -49,8 +33,6 @@ class Version:
         self.parse(vstring)
 
     def parse(self, vstring: Optional[str]) -> None:
-        # StrictVersion silently skipped parsing for falsy input, leaving
-        # self.version unset. Reject it up front instead; see module docstring.
         if not vstring:
             raise ValueError(f"invalid version number '{vstring}'")
 
@@ -71,9 +53,6 @@ class Version:
             self.prerelease = None
 
     def __str__(self) -> str:
-        # Faithful to StrictVersion, including its quirk of dropping a zero
-        # patch component: str(Version("1.0.0")) == "1.0". Callers that need the
-        # canonical three-component string should join self.version instead.
         if self.version[2] == 0:
             vstring = ".".join(str(x) for x in self.version[0:2])
         else:
@@ -85,7 +64,7 @@ class Version:
         return vstring
 
     def __repr__(self) -> str:
-        return f"Version ('{str(self)}')"
+        return f"Version ('{self!s}')"
 
     def _cmp(self, other: Any) -> Any:
         if isinstance(other, str):
@@ -96,8 +75,6 @@ class Version:
         if self.version != other.version:
             return -1 if self.version < other.version else 1
 
-        # Numeric components are equal, so the prerelease decides. A version
-        # carrying a prerelease sorts before the same version without one.
         if not self.prerelease and not other.prerelease:
             return 0
         elif self.prerelease and not other.prerelease:
@@ -138,9 +115,6 @@ class Version:
         if result is NotImplemented:
             return result
         return result >= 0
-
-    def __hash__(self) -> int:
-        return hash((self.version, self.prerelease))
 
 
 def to_version(value: Union[str, Version]) -> Version:
