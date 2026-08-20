@@ -54,7 +54,7 @@ PARSER_REJECTS = (
     ("1.0.0 beta", "invalid version number '1.0.0 beta'"),
     ("1.0.0a", "invalid version number '1.0.0a'"),
     ("１.０.０", "invalid version number '１.０.０'"),  # noqa: RUF001
-    ("١.٠.٠", "invalid version number '١.٠.٠'"),
+    ("١.٠.٠", "invalid version number '١.٠.٠'"),  # noqa: RUF001
 )
 
 
