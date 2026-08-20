@@ -10,6 +10,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           submodules: false
+          persist-credentials: false
       - name: Setup Python 3.12
         id: setup-python
         uses: actions/setup-python@v6
@@ -58,6 +59,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           submodules: false
+          persist-credentials: false
       - name: Build Docker image
         run: docker build --pull -t thunderstore:${GITHUB_SHA} .
       - name: Export Docker image
@@ -83,6 +85,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           submodules: false
+          persist-credentials: false
       - name: Download Docker image
         uses: actions/download-artifact@v4
         with:
@@ -107,6 +110,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           submodules: false
+          persist-credentials: false
       - name: Download Docker image
         uses: actions/download-artifact@v4
         with:
@@ -131,6 +135,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           submodules: false
+          persist-credentials: false
       - name: Download Docker image
         uses: actions/download-artifact@v4
         with:
