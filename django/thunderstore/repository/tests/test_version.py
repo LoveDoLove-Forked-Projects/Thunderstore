@@ -129,9 +129,27 @@ def test_version_compares_against_plain_strings():
     assert Version("1.0.0") < "1.0.1"
 
 
+def test_version_supports_all_comparison_operators():
+    assert Version("1.0.0") == Version("1.0.0")
+    assert Version("1.0.0") != Version("1.0.1")
+    assert Version("1.0.0") < Version("1.0.1")
+    assert Version("1.0.0") <= Version("1.0.0")
+    assert Version("1.0.0") <= Version("1.0.1")
+    assert Version("1.0.1") > Version("1.0.0")
+    assert Version("1.0.0") >= Version("1.0.0")
+    assert Version("1.0.1") >= Version("1.0.0")
+    assert Version("1.0.0a1") == Version("1.0.0a1")
+    assert Version("1.0.0a1") != Version("1.0.0a2")
+    assert Version("1.0.0a1") < Version("1.0.0a2")
+    assert Version("1.0.0a1") <= Version("1.0.0a2")
+
+
 def test_version_returns_notimplemented_for_other_types():
     assert Version("1.0.0").__eq__(5) is NotImplemented
     assert Version("1.0.0").__lt__(object()) is NotImplemented
+    assert Version("1.0.0").__le__(object()) is NotImplemented
+    assert Version("1.0.0").__gt__(object()) is NotImplemented
+    assert Version("1.0.0").__ge__(object()) is NotImplemented
 
 
 def test_version_is_unhashable():

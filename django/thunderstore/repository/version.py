@@ -15,7 +15,7 @@ string form.
 """
 
 import re
-from typing import Any, Optional, Tuple, Union
+from typing import Any, Optional, Tuple
 
 VERSION_RE = re.compile(r"^(\d+) \. (\d+) (\. (\d+))? ([ab](\d+))?$", re.VERBOSE)
 
@@ -115,10 +115,3 @@ class Version:
         if result is NotImplemented:
             return result
         return result >= 0
-
-
-def to_version(value: Union[str, Version]) -> Version:
-    """Coerce a version string into a Version, passing existing ones through."""
-    if isinstance(value, Version):
-        return value
-    return Version(value)
