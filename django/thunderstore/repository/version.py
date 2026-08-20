@@ -17,7 +17,11 @@ string form.
 import re
 from typing import Any, Optional, Tuple
 
-VERSION_RE = re.compile(r"^(\d+) \. (\d+) (\. (\d+))? ([ab](\d+))?$", re.VERBOSE)
+# distutils compiled version_re with VERBOSE | ASCII (verified on real Python
+# 3.8: flags == 320), so \d must not match non-ASCII digits here either.
+VERSION_RE = re.compile(
+    r"^(\d+) \. (\d+) (\. (\d+))? ([ab](\d+))?$", re.VERBOSE | re.ASCII
+)
 
 
 class Version:

@@ -30,7 +30,6 @@ PARSER_ACCEPTS = (
     ("1.0a1", (1, 0, 0), ("a", 1)),
     ("1.2.3a9", (1, 2, 3), ("a", 9)),
     ("1.0.0\n", (1, 0, 0), None),
-    ("１.０.０", (1, 0, 0), None),  # noqa: RUF001
 )
 
 PARSER_REJECTS = (
@@ -54,6 +53,8 @@ PARSER_REJECTS = (
     ("1.-1.0", "invalid version number '1.-1.0'"),
     ("1.0.0 beta", "invalid version number '1.0.0 beta'"),
     ("1.0.0a", "invalid version number '1.0.0a'"),
+    ("１.０.０", "invalid version number '１.０.０'"),  # noqa: RUF001
+    ("١.٠.٠", "invalid version number '١.٠.٠'"),
 )
 
 
@@ -193,7 +194,7 @@ VALIDATOR_REJECTS = (
     ("a.b.c", "invalid version number 'a.b.c'"),
     ("1.0.0rc1", "invalid version number '1.0.0rc1'"),
     ("20.08.210338", "Version 20.08.210338 should be written as 20.8.210338"),
-    ("１.０.０", "Version １.０.０ should be written as 1.0.0"),  # noqa: RUF001
+    ("１.０.０", "invalid version number '１.０.０'"),  # noqa: RUF001
 )
 
 
