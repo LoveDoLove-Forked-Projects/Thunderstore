@@ -358,10 +358,7 @@ def setup_cache(request):
     # on first access, so both must be reset or a cache access made anywhere
     # before this fixture (import-order dependent!) would pin the old LOCATION.
     caches._settings = None
-    try:
-        del caches.settings
-    except AttributeError:
-        pass
+    caches.__dict__.pop("settings", None)
     setattr(
         caches._connections,
         DEFAULT_CACHE_ALIAS,

@@ -6,6 +6,7 @@ from rest_framework.test import APIClient, APIRequestFactory
 
 from thunderstore.api.cyberstorm.views.package_listing_list import (
     BasePackageListAPIView,
+    PackageListPaginator,
 )
 from thunderstore.community.consts import PackageListingReviewStatus
 from thunderstore.community.factories import CommunityFactory, PackageListingFactory
@@ -940,3 +941,11 @@ def test_annotate_queryset__returns_correct_values() -> None:
 
     assert annotated.download_count == 30
     assert annotated.rating_count == 2
+
+
+def test_paginator_suppresses_schema_parameters() -> None:
+    # Unsilenced paginator hooks would break drf-yasg schema generation.
+    paginator = PackageListPaginator()
+
+    assert paginator.get_schema_fields(view=None) == []
+    assert paginator.get_schema_operation_parameters(view=None) == []
