@@ -1,6 +1,5 @@
 import re
 import uuid
-from distutils.version import StrictVersion
 from typing import TYPE_CHECKING, Optional
 
 from django.conf import settings
@@ -23,6 +22,7 @@ from thunderstore.permissions.mixins import VisibilityMixin
 from thunderstore.permissions.models.visibility import VisibilityFlagsQuerySet
 from thunderstore.permissions.utils import validate_user
 from thunderstore.repository.consts import PACKAGE_NAME_REGEX
+from thunderstore.repository.version import Version
 
 if TYPE_CHECKING:
     from thunderstore.repository.models import PackageWiki
@@ -151,9 +151,15 @@ class Package(VisibilityMixin, AdminLinkMixin):
     @cached_property
     def has_wiki(self) -> bool:
         try:
-            return self.wiki.wiki.pages.exists()
+            wiki = self.wiki.wiki
         except ObjectDoesNotExist:
             return False
+        # An unsaved dummy wiki (PackageWiki.get_for_package with dummy=True)
+        # has no pages. Django 4.x raises ValueError for related-manager
+        # queries on unsaved instances where 3.2 returned an empty queryset.
+        if wiki.pk is None:
+            return False
+        return wiki.pages.exists()
 
     @cached_property
     def full_package_name(self):
@@ -178,7 +184,7 @@ class Package(VisibilityMixin, AdminLinkMixin):
         versions = self.versions.filter(is_active=True).values_list(
             "pk", "version_number"
         )
-        ordered = sorted(versions, key=lambda version: StrictVersion(version[1]))
+        ordered = sorted(versions, key=lambda version: Version(version[1]))
         pk_list = [version[0] for version in reversed(ordered)]
         preserved = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(pk_list)])
         return (

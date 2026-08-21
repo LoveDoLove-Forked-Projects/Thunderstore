@@ -2,7 +2,6 @@ import json
 import os
 import subprocess
 import sys
-from distutils.util import strtobool
 from typing import List, Union
 
 
@@ -58,6 +57,19 @@ def register_variable(cast, name, default):
     var = EnvironmentVariable(cast, name, default)
     VARIABLES[name] = var
     return var
+
+
+def strtobool(val: str) -> int:
+    """
+    Replaces distutils.util.strtobool, removed from the standard library in
+    Python 3.12 (PEP 632). Semantics are unchanged.
+    """
+    val = val.lower()
+    if val in ("y", "yes", "t", "true", "on", "1"):
+        return 1
+    if val in ("n", "no", "f", "false", "off", "0"):
+        return 0
+    raise ValueError(f"invalid truth value {val!r}")
 
 
 def to_bool(val) -> bool:

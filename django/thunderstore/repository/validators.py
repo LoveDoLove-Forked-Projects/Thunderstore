@@ -1,10 +1,9 @@
-from distutils.version import StrictVersion
-
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.utils.deconstruct import deconstructible
 
 from thunderstore.repository.consts import PACKAGE_REFERENCE_COMPONENT_REGEX
+from thunderstore.repository.version import Version
 
 
 @deconstructible
@@ -45,7 +44,7 @@ class VersionNumberValidator:
 
     def __call__(self, value):
         try:
-            version = StrictVersion(value)
+            version = Version(value)
             correct = ".".join(str(x) for x in version.version)
             if correct != value:
                 raise ValidationError(f"Version {value} should be written as {correct}")

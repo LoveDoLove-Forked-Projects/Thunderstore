@@ -24,7 +24,7 @@ class S3MirrorConfig(TypedDict):
     location: str
     custom_domain: str
     endpoint_url: str
-    secure_urls: bool
+    url_protocol: str
     file_overwrite: bool
     default_acl: str
     object_parameters: Dict

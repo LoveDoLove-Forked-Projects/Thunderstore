@@ -59,7 +59,9 @@ def test_logout_rejects_disallowed_host(client, community_site, monkeypatch):
         HTTP_HOST=community_site.site.domain,
     )
     assert response.status_code == 302
-    assert response.url == url
+    # Django 4.1+ falls back to the configured next_page for a disallowed
+    # next URL; older versions redirected back to the logout URL itself.
+    assert response.url == "/"
 
 
 @pytest.mark.django_db

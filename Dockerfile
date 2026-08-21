@@ -1,4 +1,6 @@
-FROM node:12-alpine as builder
+# Digest-pinned: node 12 is EOL and deliberately frozen (it builds the legacy
+# site's assets only). The pin stops the tag drifting or vanishing mid-migration.
+FROM node:12-alpine@sha256:d4b15b3d48f42059a15bd659be60afe21762aae9d6cbea6f124440895c27db68 as builder
 
 WORKDIR /app
 COPY ./builder/package.json ./builder/yarn.lock /app/
@@ -6,7 +8,7 @@ RUN yarn install --frozen-lockfile
 COPY ./builder /app
 RUN yarn run build
 
-FROM python:3.8-slim-bullseye@sha256:e191a71397fd61fbddb6712cd43ef9a2c17df0b5e7ba67607128554cd6bff267
+FROM python:3.12-slim-bookworm@sha256:4766d8b510c428e595d74b9cc5bbb2fae8e26316fffb4adc89908d79aacd58a2
 
 LABEL org.opencontainers.image.source="https://github.com/thunderstore-io/Thunderstore"
 

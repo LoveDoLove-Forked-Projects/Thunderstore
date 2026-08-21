@@ -28,7 +28,7 @@ def test_get_storage_class_or_stub(mocker) -> None:
             "location": "test",
             "custom_domain": "localhost:9000/thunderstore",
             "endpoint_url": "http://minio:9000/",
-            "secure_urls": False,
+            "url_protocol": "http:",
             "file_overwrite": True,
             "default_acl": "",
             "object_parameters": {},
