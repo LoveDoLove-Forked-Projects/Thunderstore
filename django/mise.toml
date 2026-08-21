@@ -1,0 +1,10 @@
+[settings]
+pipx.uvx = true
+
+[tools]
+python = "3.12"
+uv = "latest"
+"pipx:poetry" = "1.4.2"
+
+[tasks.install]
+run = "poetry install --sync"
