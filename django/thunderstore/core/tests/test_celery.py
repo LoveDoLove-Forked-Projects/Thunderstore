@@ -115,3 +115,29 @@ def test_celery_post(
     celery_response = celery_post.delay("http://localhost:8888")
     assert celery_response.state == "SUCCESS"
     assert isinstance(celery_response, celery.result.EagerResult)
+
+
+def test_celery_result_extended_is_enabled():
+    from thunderstore.core.celery import app
+
+    assert app.conf.result_extended is True
+
+
+@pytest.mark.django_db
+def test_task_results_store_task_name_and_extended_fields(celery_app):
+    celery_app.conf.task_store_eager_result = True
+
+    @celery_app.task(name="test.store_extended_result")
+    def sample(a, b):
+        return a + b
+
+    result = sample.apply(args=(1,), kwargs={"b": 2})
+    assert result.get(timeout=5) == 3
+
+    from django_celery_results.models import TaskResult
+
+    row = TaskResult.objects.get(task_id=result.id)
+    assert row.task_name == "test.store_extended_result"
+    assert row.task_args == "[1]"
+    assert row.task_kwargs == '{"b": 2}'
+    assert row.worker
