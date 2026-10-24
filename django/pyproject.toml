@@ -9,7 +9,7 @@ python = "^3.12"
 Django = "^4.2"
 django-environ = "^0.4"
 arrow = "^0.17"
-Pillow = "^10.3"
+Pillow = ">=10.3,<14.0"
 psycopg2-binary = "^2.9.9"
 easy-thumbnails = "^2.9"  # This has a monkeypatch and might be a difficult upgrade
 gunicorn = { version = "^20.0", extras = ["gevent"] }
@@ -68,7 +68,7 @@ Faker = "^40.0"
 pytest-mock = "^3.16"
 django-debug-toolbar = "^4.0"
 pytest-env = "^0.6.2"
-black = "~22.3.0"  # kept in sync with .pre-commit-config.yaml
+black = "~26.10.1"  # kept in sync with .pre-commit-config.yaml
 isort = "^5.7.0"
 jsonschema = "<4.0.0"
 pre-commit = "^2.9.3"
